@@ -5,7 +5,7 @@
 #include "SDK/plugincommon.h"
 
 #include "Data.h"
-#include "Hooks.hpp"
+#include "Hooks.h"
 
 #define DECLARE_NATIVE(name) cell AMX_NATIVE_CALL name(AMX* amx, cell* params)
 #define CHECK_PARAMS(name,params,count) if((params[0] / sizeof(cell)) < count) return logprintf("[%s] takes %d arguments, but %d were sent", name, count, (params[0] / sizeof(cell))), 0

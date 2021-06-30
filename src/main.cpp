@@ -1,7 +1,7 @@
 #include "SDK/amx/amx.h"
 #include "SDK/plugincommon.h"
 
-#include "Hooks.hpp"
+#include "Hooks.h"
 #include "Natives.h"
 
 #define PLUGIN_NAME		"Pawn.Query"
