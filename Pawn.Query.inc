@@ -30,7 +30,7 @@
 #define MAX_GAMEMODE_LENGTH 50
 #define MAX_LANGUAGE_LENGTH 30
 
-enum Query_HookType
+enum _:Query_HookType
 {
 	QHOOK_INFO,
 	QHOOK_RULES,
