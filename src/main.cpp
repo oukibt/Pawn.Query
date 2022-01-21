@@ -1,11 +1,17 @@
 #include "SDK/amx/amx.h"
 #include "SDK/plugincommon.h"
 
+#include <chrono>
+#include <thread>
+#include <cstring>
+
 #include "Hooks.h"
 #include "Natives.h"
+#include "Utils.h"
+#include "Data.h"
 
 #define PLUGIN_NAME		"Pawn.Query"
-#define PLUGIN_VERSION	"v1.0"
+#define PLUGIN_VERSION	"v1.0.1"
 #define PLUGIN_AUTHOR	"oukibt"
 
 #ifndef INVALID_SOCKET
@@ -14,15 +20,6 @@
 
 int HOOK_ProcessQueryPacket(unsigned int addr, unsigned short port, char* data, int len, SOCKET sock)
 {
-	enum Type
-	{
-		eInfo,
-		eRules,
-		ePlayers,
-		eDPlayers,
-		ePing,
-	};
-
 	static sockaddr_in to;
 
 	if ((*(unsigned long*)(data) == 0x504D4153))
@@ -32,17 +29,32 @@ int HOOK_ProcessQueryPacket(unsigned int addr, unsigned short port, char* data, 
 			to.sin_family = AF_INET;
 			to.sin_port = htons(port);
 			to.sin_addr.s_addr = addr;
-
+			
 			switch (data[10])
 			{
 				case 'p':
 				{
-					if (!Data.GetState(Type::ePing) || Data.SendPing) return ProcessQueryPacket_hook(addr, port, data, len, sock);
+					if (!Data.GetState(QueryData::Type::ePing) || Data.SendPing)
+					{
+						hook_ProcessQueryPacket.disable();
+						reinterpret_cast<int(*)(unsigned int, unsigned short, char*, int, SOCKET)>(ProcessQueryPacketAddr)(addr, port, data, len, sock);
+						hook_ProcessQueryPacket.enable();
+
+						return 1;
+					}
+
 					break;
 				}
 				case 'c':
 				{
-					if (!Data.GetState(Type::ePlayers)) return ProcessQueryPacket_hook(addr, port, data, len, sock);
+					if (!Data.GetState(QueryData::Type::ePlayers))
+					{
+						hook_ProcessQueryPacket.disable();
+						reinterpret_cast<int(*)(unsigned int, unsigned short, char*, int, SOCKET)>(ProcessQueryPacketAddr)(addr, port, data, len, sock);
+						hook_ProcessQueryPacket.enable();
+
+						return 1;
+					}
 
 					WORD PlayersCount = static_cast<WORD>(Data.Players.size());
 
@@ -76,7 +88,14 @@ int HOOK_ProcessQueryPacket(unsigned int addr, unsigned short port, char* data, 
 
 				case 'r':
 				{
-					if (!Data.GetState(Type::eRules)) return ProcessQueryPacket_hook(addr, port, data, len, sock);
+					if (!Data.GetState(QueryData::Type::eRules))
+					{
+						hook_ProcessQueryPacket.disable();
+						reinterpret_cast<int(*)(unsigned int, unsigned short, char*, int, SOCKET)>(ProcessQueryPacketAddr)(addr, port, data, len, sock);
+						hook_ProcessQueryPacket.enable();
+
+						return 1;
+					}
 
 					WORD RulesCount = static_cast<WORD>(Data.Rules.size());
 
@@ -114,7 +133,14 @@ int HOOK_ProcessQueryPacket(unsigned int addr, unsigned short port, char* data, 
 				
 				case 'i':
 				{
-					if (!Data.GetState(Type::eInfo)) return ProcessQueryPacket_hook(addr, port, data, len, sock);
+					if (!Data.GetState(QueryData::Type::eInfo))
+					{
+						hook_ProcessQueryPacket.disable();
+						reinterpret_cast<int(*)(unsigned int, unsigned short, char*, int, SOCKET)>(ProcessQueryPacketAddr)(addr, port, data, len, sock);
+						hook_ProcessQueryPacket.enable();
+
+						return 1;
+					}
 
 					char* newdata = (char*)malloc(13 + (MAX_HOSTNAME_LENGTH + MAX_GAMEMODE_LENGTH + MAX_LANGUAGE_LENGTH) + 17);
 					char* keep_ptr = newdata;
@@ -162,7 +188,14 @@ int HOOK_ProcessQueryPacket(unsigned int addr, unsigned short port, char* data, 
 
 				case 'd':
 				{
-					if (!Data.GetState(Type::eDPlayers)) return ProcessQueryPacket_hook(addr, port, data, len, sock);
+					if (!Data.GetState(QueryData::Type::eDPlayers))
+					{
+						hook_ProcessQueryPacket.disable();
+						reinterpret_cast<int(*)(unsigned int, unsigned short, char*, int, SOCKET)>(ProcessQueryPacketAddr)(addr, port, data, len, sock);
+						hook_ProcessQueryPacket.enable();
+
+						return 1;
+					}
 
 					WORD PlayersCount = static_cast<WORD>(Data.DetailedPlayers.size());
 
@@ -202,6 +235,7 @@ int HOOK_ProcessQueryPacket(unsigned int addr, unsigned short port, char* data, 
 		else return 0;
 	}
 	else return 0;
+
 	return 1;
 }
 
@@ -210,20 +244,18 @@ extern void *pAMXFunctions;
 PLUGIN_EXPORT bool PLUGIN_CALL Load(void** ppData)
 {
 	pAMXFunctions = ppData[PLUGIN_DATA_AMX_EXPORTS];
+
 	logprintf = reinterpret_cast<logprintf_t>(ppData[PLUGIN_DATA_LOGPRINTF]);
 
 	logprintf("%s %s by %s loaded.", PLUGIN_NAME, PLUGIN_VERSION, PLUGIN_AUTHOR);
 
-	CAddress::Initialize();
-
-	CAddress::InitHook();
+	CPacketHook::Initialize();
 
 	return true;
 }
 
 PLUGIN_EXPORT void PLUGIN_CALL Unload()
 {
-	CAddress::UnloadHook();
 	logprintf("%s successfully unloaded");
 }
 

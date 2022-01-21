@@ -26,7 +26,7 @@ public OnGameModeInit()
 {
 	for (new i = 0; i < Query_HookType; i++)
 	{
-		EnableHookQuery(Query_HookType: i, true);
+		EnableHookQuery(i, true);
 		// Hook all types
 	}
 

@@ -46,7 +46,7 @@ enum _:Query_Rules
 	PQ_rValue[MAX_RULE_LENGTH],
 };
 
-native EnableHookQuery(Query_HookType: Type, bool: enable);
+native EnableHookQuery(Type, bool: enable);
 native SetServerPlayers(const Players[][Query_Players], const size = sizeof Players);
 native SetServerRules(const Rules[][Query_Rules], const size = sizeof Rules);
 native SetServerInformation(bool: havePassword, MaxPlayers, const hostname[], const gamemode[], const language[]);

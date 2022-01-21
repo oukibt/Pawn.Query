@@ -30,7 +30,7 @@ class QueryInformation
 {
 public:
 	bool Password;
-	WORD MaxPlayers;
+	unsigned short MaxPlayers;
 	char Hostname[MAX_HOSTNAME_LENGTH];
 	char Gamemode[MAX_GAMEMODE_LENGTH];
 	char Language[MAX_LANGUAGE_LENGTH];
@@ -39,7 +39,7 @@ public:
 class QueryDetailedPlayer
 {
 public:
-	BYTE ID;
+	unsigned char ID;
 	char Name[MAX_PLAYER_NAME];
 	int Score;
 	int Ping;
@@ -47,21 +47,23 @@ public:
 
 class QueryData
 {
-	enum Type
+	bool Hooked[5];
+public:
+
+	enum class Type
 	{
-		eInfo,
+		eInfo = 0,
 		eRules,
 		ePlayers,
 		eDPlayers,
 		ePing,
 	};
-	bool Hooked[5];
-public:
+
 	bool SendPing = true;
 
-	bool GetState(char type)
+	bool GetState(Type type)
 	{
-		return Hooked[type];
+		return Hooked[static_cast<char>(type)];
 	};
 
 	void SetState(char type, bool state)
@@ -75,6 +77,6 @@ public:
 	QueryInformation ServerInfo;
 };
 
-QueryData Data;
+extern QueryData Data;
 
 #endif
