@@ -33,9 +33,9 @@ public OnGameModeInit()
 	new Players[][Query_Players] = {
 
 		{ "Dan", 15 },
-        { "Mike", 25 },
-        { "Alex", 50 },
-        { "John", 222 }
+        	{ "Mike", 25 },
+        	{ "Alex", 50 },
+        	{ "John", 222 }
 	};
 
 	SetServerPlayers(Players); // Set a players
@@ -45,8 +45,8 @@ public OnGameModeInit()
 	new Rules[][Query_Rules] = {
 
 		{ "Rule 1", "Value 1" },
-        { "Rule 2", "Value 2" },
-        { "Rule 3..?", "No, it's enough" }
+        	{ "Rule 2", "Value 2" },
+        	{ "Rule 3..?", "No, it's enough" }
 	};
 
 	SetServerRules(Rules); // Set a rules
@@ -61,8 +61,8 @@ public OnGameModeInit()
 
 	//////////////////////////////////////////
 
-    SetServerRule("Rule 4", "Sooo..."); // Add another rule
-    RemoveServerRule("Rule 3..?"); // Remove one of the rules
+    	SetServerRule("Rule 4", "Sooo..."); // Add another rule
+    	RemoveServerRule("Rule 3..?"); // Remove one of the rules
 
 	return 1;
 }
