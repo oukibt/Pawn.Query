@@ -16,6 +16,10 @@ namespace Natives
 	DECLARE_NATIVE(EnableHookQuery);
 	DECLARE_NATIVE(SetServerPlayers);
 	DECLARE_NATIVE(SetServerRules);
+	DECLARE_NATIVE(SetServerRule);
+	DECLARE_NATIVE(RemoveServerRule);
+	DECLARE_NATIVE(IsValidServerRule);
+	DECLARE_NATIVE(ClearRules);
 	DECLARE_NATIVE(SetServerInformation);
 	DECLARE_NATIVE(SetServerDetailedPlayers);
 	DECLARE_NATIVE(SendPing);

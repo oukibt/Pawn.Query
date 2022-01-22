@@ -34,7 +34,7 @@ int HOOK_ProcessQueryPacket(unsigned int addr, unsigned short port, char* data, 
 			{
 				case 'p':
 				{
-					if (!Data.GetState(QueryData::Type::ePing) || Data.SendPing)
+					if (Data.GetState(QueryData::Type::ePing) == false || Data.SendPing)
 					{
 						hook_ProcessQueryPacket.disable();
 						reinterpret_cast<int(*)(unsigned int, unsigned short, char*, int, SOCKET)>(ProcessQueryPacketAddr)(addr, port, data, len, sock);
@@ -47,7 +47,7 @@ int HOOK_ProcessQueryPacket(unsigned int addr, unsigned short port, char* data, 
 				}
 				case 'c':
 				{
-					if (!Data.GetState(QueryData::Type::ePlayers))
+					if (Data.GetState(QueryData::Type::ePlayers) == false)
 					{
 						hook_ProcessQueryPacket.disable();
 						reinterpret_cast<int(*)(unsigned int, unsigned short, char*, int, SOCKET)>(ProcessQueryPacketAddr)(addr, port, data, len, sock);
@@ -88,7 +88,7 @@ int HOOK_ProcessQueryPacket(unsigned int addr, unsigned short port, char* data, 
 
 				case 'r':
 				{
-					if (!Data.GetState(QueryData::Type::eRules))
+					if (Data.GetState(QueryData::Type::eRules) == false)
 					{
 						hook_ProcessQueryPacket.disable();
 						reinterpret_cast<int(*)(unsigned int, unsigned short, char*, int, SOCKET)>(ProcessQueryPacketAddr)(addr, port, data, len, sock);
@@ -133,7 +133,7 @@ int HOOK_ProcessQueryPacket(unsigned int addr, unsigned short port, char* data, 
 				
 				case 'i':
 				{
-					if (!Data.GetState(QueryData::Type::eInfo))
+					if (Data.GetState(QueryData::Type::eInfo) == false)
 					{
 						hook_ProcessQueryPacket.disable();
 						reinterpret_cast<int(*)(unsigned int, unsigned short, char*, int, SOCKET)>(ProcessQueryPacketAddr)(addr, port, data, len, sock);
@@ -188,7 +188,7 @@ int HOOK_ProcessQueryPacket(unsigned int addr, unsigned short port, char* data, 
 
 				case 'd':
 				{
-					if (!Data.GetState(QueryData::Type::eDPlayers))
+					if (Data.GetState(QueryData::Type::eDPlayers) == false)
 					{
 						hook_ProcessQueryPacket.disable();
 						reinterpret_cast<int(*)(unsigned int, unsigned short, char*, int, SOCKET)>(ProcessQueryPacketAddr)(addr, port, data, len, sock);

@@ -73,6 +73,95 @@ DECLARE_NATIVE(Natives::SetServerRules)
 	return 1;
 }
 
+DECLARE_NATIVE(Natives::SetServerRule)
+{
+	CHECK_PARAMS("SetServerRule", params, 2);
+
+	cell* addr;
+	int len, i, size = Data.Rules.size();
+
+	QueryRule Rule;
+
+	amx_GetAddr(amx, params[1], &addr);
+	amx_StrLen(addr, &len);
+	amx_GetString(Rule.Name, addr, NULL, len + 1);
+
+	amx_GetAddr(amx, params[2], &addr);
+	amx_StrLen(addr, &len);
+	amx_GetString(Rule.Value, addr, NULL, len + 1);
+
+	for (i = 0; i < size; i++)
+	{
+		if (std::strcmp(Rule.Name, Data.Rules[i].Name) == false)
+		{
+			memcpy(Data.Rules[i].Name, Rule.Name, sizeof(Rule.Name));
+			memcpy(Data.Rules[i].Value, Rule.Value, sizeof(Rule.Value));
+
+			return 1;
+		}
+	}
+
+	Data.Rules.push_back(Rule);
+
+	return 1;
+}
+
+DECLARE_NATIVE(Natives::RemoveServerRule)
+{
+	CHECK_PARAMS("RemoveServerRule", params, 1);
+
+	char name[MAX_RULE_LENGTH];
+
+	cell* addr;
+	int i, len, size = Data.Rules.size();
+
+	amx_GetAddr(amx, params[1], &addr);
+	amx_StrLen(addr, &len);
+	amx_GetString(name, addr, NULL, len + 1);
+
+	for (i = 0; i < size; i++)
+	{
+		if (std::strcmp(name, Data.Rules[i].Name) == false)
+		{
+			Data.Rules.erase(Data.Rules.begin() + i);
+
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
+DECLARE_NATIVE(Natives::IsValidServerRule)
+{
+	CHECK_PARAMS("IsValidServerRule", params, 1);
+
+	char name[MAX_RULE_LENGTH];
+
+	cell* addr;
+	int i, len, size = Data.Rules.size();
+
+	amx_GetAddr(amx, params[1], &addr);
+	amx_StrLen(addr, &len);
+	amx_GetString(name, addr, NULL, len + 1);
+
+	for (i = 0; i < size; i++)
+	{
+		if (std::strcmp(name, Data.Rules[i].Name) == false) return 1;
+	}
+
+	return 0;
+}
+
+DECLARE_NATIVE(Natives::ClearRules)
+{
+	CHECK_PARAMS("ClearRules", params, 0);
+
+	Data.Rules.clear();
+
+	return 0;
+}
+
 DECLARE_NATIVE(Natives::SetServerInformation)
 {
 	CHECK_PARAMS("SetServerInformation", params, 5);
@@ -152,6 +241,10 @@ AMX_NATIVE_INFO amx_natives[] = {
 	{ "SetServerPlayers", Natives::SetServerPlayers },
 	{ "SetServerDetailedPlayers", Natives::SetServerDetailedPlayers },
 	{ "SetServerRules", Natives::SetServerRules },
+	{ "SetServerRule", Natives::SetServerRule },
+	{ "RemoveServerRule", Natives::RemoveServerRule },
+	{ "IsValidServerRule", Natives::IsValidServerRule },
+	{ "ClearRules", Natives::ClearRules },
 	{ "SetServerInformation", Natives::SetServerInformation },
 	{ "SendPing", Natives::SendPing }
 };

@@ -1,15 +1,12 @@
-/* Pawn.Query 1.0
- * 
- * Copyright (c) 2021 oukibt
- * All rights removed
- *
- */
+/* Pawn.Query 1.1.0 | oukibt | 22.01.2022 */
 
 #if defined PAWNQUERY_INC
 	#endinput
 #endif
 
-#define PAWNQUERY_INC
+#if !defined _samp_included
+	#include <a_samp>
+#endif
 
 #define MAX_RULE_LENGTH 30
 
@@ -48,7 +45,14 @@ enum _:Query_Rules
 
 native EnableHookQuery(Type, bool: enable);
 native SetServerPlayers(const Players[][Query_Players], const size = sizeof Players);
+
 native SetServerRules(const Rules[][Query_Rules], const size = sizeof Rules);
+
+native SetServerRule(const name[], const value[]);
+native RemoveServerRule(const name[]);
+native bool: IsValidServerRule(const name[]);
+native ClearRules();
+
 native SetServerInformation(bool: havePassword, MaxPlayers, const hostname[], const gamemode[], const language[]);
 native SetServerDetailedPlayers(const DetailedPlayers[][Query_DetailedPlayers], const size = sizeof DetailedPlayers);
 native SendPing(bool: send);

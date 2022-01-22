@@ -33,9 +33,9 @@ public OnGameModeInit()
 	new Players[][Query_Players] = {
 
 		{ "Dan", 15 },
-		{ "Mike", 25 },
-		{ "Naruto", 50 },
-		{ "Sakura", 200 }
+        { "Mike", 25 },
+        { "Alex", 50 },
+        { "John", 222 }
 	};
 
 	SetServerPlayers(Players); // Set a players
@@ -44,33 +44,38 @@ public OnGameModeInit()
 
 	new Rules[][Query_Rules] = {
 
-		{ "Rule 1", "Don't cheating" },
-		{ "Rule 2", "Don't scam" },
-		{ "Rule 3..?", "No, it enough" }
+		{ "Rule 1", "Value 1" },
+        { "Rule 2", "Value 2" },
+        { "Rule 3..?", "No, it's enough" }
 	};
 
 	SetServerRules(Rules); // Set a rules
 
 	//////////////////////////////////////////
 
-	SetServerInformation(true, 228, "Shippuden", "Just gamemode", "Doesn't matter");
+	SetServerInformation(true, 111, "=== SERVER NAME ===", "My Drift GameMode", "En / Ru");
 
 	//////////////////////////////////////////
 
 	SendPing(false); // Don't send a ping
+
+	//////////////////////////////////////////
+
+    SetServerRule("Rule 4", "Sooo..."); // Add another rule
+    RemoveServerRule("Rule 3..?"); // Remove one of the rules
 
 	return 1;
 }
 ```
 
 
-![Result](https://cdn.discordapp.com/attachments/582915540285128725/859874440582004759/PQ.png)
+![Result](https://cdn.discordapp.com/attachments/582915540285128725/934332530813988874/unknown.png)
 
 ---
 
 ### **Download**
 
-[Pawn.Query](https://github.com/oukibt/Pawn.Query/releases/tag/1.0)
+[Pawn.Query](https://github.com/oukibt/Pawn.Query/releases/tag/1.1)
 
 ---
 
