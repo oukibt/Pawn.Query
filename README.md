@@ -80,7 +80,7 @@ public OnGameModeInit()
 
 ### **Download**
 
-[Pawn.Query](https://github.com/oukibt/Pawn.Query/releases/tag/1.1)
+[Pawn.Query](https://github.com/oukibt/Pawn.Query/releases/tag/1.1.1)
 
 ---
 
