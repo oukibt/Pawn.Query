@@ -49,6 +49,7 @@ native SetServerPlayers(const Players[][Query_Players], const size = sizeof Play
 native SetServerRules(const Rules[][Query_Rules], const size = sizeof Rules);
 
 native SetServerRule(const name[], const value[]);
+native GetServerRule(const name[], dest[]);
 native RemoveServerRule(const name[]);
 native bool: IsValidServerRule(const name[]);
 native ClearRules();

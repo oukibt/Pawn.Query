@@ -20,6 +20,13 @@ namespace Natives
 	DECLARE_NATIVE(RemoveServerRule);
 	DECLARE_NATIVE(IsValidServerRule);
 	DECLARE_NATIVE(ClearRules);
+	DECLARE_NATIVE(GetServerRuleCount);
+	DECLARE_NATIVE(SetServerRuleValueByID);
+	DECLARE_NATIVE(RemoveServerRuleByID);
+	DECLARE_NATIVE(GetServerRuleByID);
+	DECLARE_NATIVE(GetServerRuleID);
+	DECLARE_NATIVE(GetServerRuleValue);
+	DECLARE_NATIVE(GetServerRuleValueByID);
 	DECLARE_NATIVE(SetServerInformation);
 	DECLARE_NATIVE(SetServerDetailedPlayers);
 	DECLARE_NATIVE(SendPing);
