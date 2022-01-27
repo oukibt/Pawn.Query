@@ -1,10 +1,11 @@
-#include <cstring>
-
 #include "Natives.h"
 #include "Data.h"
 
+#include <cstring>
+
 #define CHECK_PARAMS(name,params,count) if((params[0] / sizeof(cell)) < count) return logprintf("[%s] takes %d arguments, but %d were sent", name, count, (params[0] / sizeof(cell))), 0
 
+// native EnableHookQuery(Type, bool: enable);
 DECLARE_NATIVE(Natives::EnableHookQuery)
 {
 	CHECK_PARAMS("EnableHookQuery", params, 2);
@@ -14,6 +15,7 @@ DECLARE_NATIVE(Natives::EnableHookQuery)
 	return 1;
 }
 
+// native SetServerPlayers(const Players[][Query_Players], const size = sizeof Players);
 DECLARE_NATIVE(Natives::SetServerPlayers)
 {
 	CHECK_PARAMS("SetServerPlayers", params, 2);
@@ -44,6 +46,7 @@ DECLARE_NATIVE(Natives::SetServerPlayers)
 	return 1;
 }
 
+// native SetServerRules(const Rules[][Query_Rules], const size = sizeof Rules);
 DECLARE_NATIVE(Natives::SetServerRules)
 {
 	CHECK_PARAMS("SetServerRules", params, 2);
@@ -75,6 +78,7 @@ DECLARE_NATIVE(Natives::SetServerRules)
 	return 1;
 }
 
+// native SetServerRule(const name[], const value[]);
 DECLARE_NATIVE(Natives::SetServerRule)
 {
 	CHECK_PARAMS("SetServerRule", params, 2);
@@ -96,8 +100,8 @@ DECLARE_NATIVE(Natives::SetServerRule)
 	{
 		if (std::strcmp(Rule.Name, Data.Rules[i].Name) == false)
 		{
-			memcpy(Data.Rules[i].Name, Rule.Name, MAX_RULE_LENGTH);
-			memcpy(Data.Rules[i].Value, Rule.Value, MAX_RULE_LENGTH);
+			memcpy(Data.Rules[i].Name, Rule.Name, sizeof(Rule.Name));
+			memcpy(Data.Rules[i].Value, Rule.Value, sizeof(Rule.Value));
 
 			return 1;
 		}
@@ -108,6 +112,41 @@ DECLARE_NATIVE(Natives::SetServerRule)
 	return 1;
 }
 
+// native GetServerRule(const name[], dest[]);
+DECLARE_NATIVE(Natives::GetServerRule)
+{
+	CHECK_PARAMS("GetServerRule", params, 2);
+
+	cell* addr;
+	int i, len = 0, size = Data.Rules.size();
+
+	amx_GetAddr(amx, params[1], &addr);
+
+	amx_StrLen(addr, &len);
+	len++;
+
+	if (len <= 0 || len >= MAX_RULE_LENGTH) return 0;
+
+	char ruleName[MAX_RULE_LENGTH];
+	memset(ruleName, 0, sizeof(ruleName));
+	amx_GetString(ruleName, addr, NULL, MAX_RULE_LENGTH);
+
+	amx_GetAddr(amx, params[2], &addr);
+
+	for (i = 0; i < size; i++)
+	{
+		if (std::strcmp(ruleName, Data.Rules[i].Name) == false)
+		{
+			amx_SetString(addr, Data.Rules[i].Value, NULL, NULL, MAX_RULE_LENGTH);
+
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
+// native RemoveServerRule(const name[]);
 DECLARE_NATIVE(Natives::RemoveServerRule)
 {
 	CHECK_PARAMS("RemoveServerRule", params, 1);
@@ -134,6 +173,7 @@ DECLARE_NATIVE(Natives::RemoveServerRule)
 	return 0;
 }
 
+// native bool: IsValidServerRule(const name[]);
 DECLARE_NATIVE(Natives::IsValidServerRule)
 {
 	CHECK_PARAMS("IsValidServerRule", params, 1);
@@ -155,148 +195,17 @@ DECLARE_NATIVE(Natives::IsValidServerRule)
 	return 0;
 }
 
+// native ClearRules();
 DECLARE_NATIVE(Natives::ClearRules)
 {
 	CHECK_PARAMS("ClearRules", params, 0);
 
 	Data.Rules.clear();
 
-	return 1;
-}
-
-DECLARE_NATIVE(Natives::GetServerRuleCount)
-{
-	CHECK_PARAMS("GetServerRuleCount", params, 0);
-
-	int size = Data.Rules.size();
-
-	return size;
-}
-
-DECLARE_NATIVE(Natives::SetServerRuleValueByID)
-{
-	CHECK_PARAMS("SetServerRuleValueByID", params, 2);
-
-	char value[MAX_RULE_LENGTH];
-
-	cell* addr;
-	int idx, len, size = Data.Rules.size();
-
-	idx = params[1];
-
-	if (idx < 0 || idx >= size) return 0;
-
-	amx_GetAddr(amx, params[2], &addr);
-	amx_StrLen(addr, &len);
-	amx_GetString(value, addr, NULL, len + 1);
-
-	memcpy(Data.Rules[idx].Value, value, MAX_RULE_LENGTH);
-
-	return 1;
-}
-
-DECLARE_NATIVE(Natives::RemoveServerRuleByID)
-{
-	CHECK_PARAMS("RemoveServerRuleByID", params, 1);
-
-	int idx, size = Data.Rules.size();
-
-	idx = params[1];
-
-	if (idx < 0 || idx >= size) return 0;
-
-	Data.Rules.erase(Data.Rules.begin() + idx);
-
-	return 1;
-}
-
-DECLARE_NATIVE(Natives::GetServerRuleByID)
-{
-	CHECK_PARAMS("GetServerRuleByID", params, 2);
-
-	int idx, size = Data.Rules.size();
-
-	idx = params[1];
-
-	if (idx < 0 || idx >= size) return 0;
-
-	cell* addr;
-	amx_GetAddr(amx, params[2], &addr);
-
-	amx_SetString(addr, Data.Rules[idx].Name, 0, 0, MAX_RULE_LENGTH);
-
-	return 1;
-}
-
-DECLARE_NATIVE(Natives::GetServerRuleID)
-{
-	CHECK_PARAMS("GetServerRuleID", params, 1);
-
-	char name[MAX_RULE_LENGTH];
-
-	cell* addr;
-	int i, len, size = Data.Rules.size();
-
-	amx_GetAddr(amx, params[1], &addr);
-	amx_StrLen(addr, &len);
-	amx_GetString(name, addr, NULL, len + 1);
-
-	for (i = 0; i < size; i++)
-	{
-		if (std::strcmp(name, Data.Rules[i].Name) == false) return i;
-	}
-
-	return -1;
-}
-
-
-DECLARE_NATIVE(Natives::GetServerRuleValue)
-{
-	CHECK_PARAMS("GetServerRuleValue", params, 2);
-
-	char name[MAX_RULE_LENGTH];
-
-	cell* addr;
-	int i, len, size = Data.Rules.size();
-
-	amx_GetAddr(amx, params[1], &addr);
-	amx_StrLen(addr, &len);
-	amx_GetString(name, addr, NULL, len + 1);
-
-	amx_GetAddr(amx, params[2], &addr);
-
-	for (i = 0; i < size; i++)
-	{
-		if (std::strcmp(name, Data.Rules[i].Name) == false)
-		{
-			amx_SetString(addr, Data.Rules[i].Value, 0, 0, MAX_RULE_LENGTH);
-
-			return 1;
-		}
-	}
-
 	return 0;
 }
 
-DECLARE_NATIVE(Natives::GetServerRuleValueByID)
-{
-	CHECK_PARAMS("GetServerRuleValueByID", params, 2);
-
-	int idx, size = Data.Rules.size();
-
-	idx = params[1];
-
-	if (idx < 0 || idx >= size) return 0;
-
-	cell* addr;
-	amx_GetAddr(amx, params[2], &addr);
-
-	amx_SetString(addr, Data.Rules[idx].Value, 0, 0, MAX_RULE_LENGTH);
-
-	return 0;
-}
-
-
+// native SetServerInformation(bool: havePassword, MaxPlayers, const hostname[], const gamemode[], const language[]);
 DECLARE_NATIVE(Natives::SetServerInformation)
 {
 	CHECK_PARAMS("SetServerInformation", params, 5);
@@ -323,6 +232,7 @@ DECLARE_NATIVE(Natives::SetServerInformation)
 	return 1;
 }
 
+// native SetServerDetailedPlayers(const DetailedPlayers[][Query_DetailedPlayers], const size = sizeof DetailedPlayers);
 DECLARE_NATIVE(Natives::SetServerDetailedPlayers)
 {
 	CHECK_PARAMS("SetServerDetailedPlayers", params, 2);
@@ -361,6 +271,7 @@ DECLARE_NATIVE(Natives::SetServerDetailedPlayers)
 	return 1;
 }
 
+// native SendPing(bool: send);
 DECLARE_NATIVE(Natives::SendPing)
 {
 	CHECK_PARAMS("SendPing", params, 1);
@@ -376,19 +287,11 @@ AMX_NATIVE_INFO amx_natives[] = {
 	{ "SetServerPlayers", Natives::SetServerPlayers },
 	{ "SetServerDetailedPlayers", Natives::SetServerDetailedPlayers },
 	{ "SetServerRules", Natives::SetServerRules },
-
-	{ "GetServerRuleCount", Natives::GetServerRuleCount },
 	{ "SetServerRule", Natives::SetServerRule },
-	{ "SetServerRuleValueByID", Natives::SetServerRuleValueByID },
+	{ "GetServerRule", Natives::GetServerRule },
 	{ "RemoveServerRule", Natives::RemoveServerRule },
-	{ "RemoveServerRuleByID", Natives::RemoveServerRuleByID },
 	{ "IsValidServerRule", Natives::IsValidServerRule },
 	{ "ClearRules", Natives::ClearRules },
-	{ "GetServerRuleValue", Natives::GetServerRuleValue },
-	{ "GetServerRuleValueByID", Natives::GetServerRuleValueByID },
-	{ "GetServerRuleByID", Natives::GetServerRuleByID },
-	{ "GetServerRuleID", Natives::GetServerRuleID },
-
 	{ "SetServerInformation", Natives::SetServerInformation },
 	{ "SendPing", Natives::SendPing }
 };

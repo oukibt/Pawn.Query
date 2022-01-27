@@ -1,8 +1,6 @@
 #include "SDK/amx/amx.h"
 #include "SDK/plugincommon.h"
 
-#include <chrono>
-#include <thread>
 #include <cstring>
 
 #include "Hooks.h"
@@ -11,7 +9,7 @@
 #include "Data.h"
 
 #define PLUGIN_NAME		"Pawn.Query"
-#define PLUGIN_VERSION	"v1.0.1"
+#define PLUGIN_VERSION	"v1.1.1"
 #define PLUGIN_AUTHOR	"oukibt"
 
 #ifndef INVALID_SOCKET
@@ -256,7 +254,7 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load(void** ppData)
 
 PLUGIN_EXPORT void PLUGIN_CALL Unload()
 {
-	logprintf("%s successfully unloaded");
+	logprintf("%s successfully unloaded", PLUGIN_NAME);
 }
 
 PLUGIN_EXPORT unsigned int PLUGIN_CALL Supports()
