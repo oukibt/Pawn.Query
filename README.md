@@ -33,9 +33,9 @@ public OnGameModeInit()
 	new Players[][Query_Players] = {
 
 		{ "Dan", 15 },
-    	{ "Mike", 25 },
-    	{ "Alex", 50 },
-    	{ "John", 222 }
+		{ "Mike", 25 },
+		{ "Alex", 50 },
+		{ "John", 222 }
 	};
 
 	SetServerPlayers(Players); // Set a players
@@ -45,8 +45,8 @@ public OnGameModeInit()
 	new Rules[][Query_Rules] = {
 
 		{ "Rule 1", "Value 1" },
-    	{ "Rule 2", "Value 2" },
-    	{ "Rule 3..?", "No, it's enough" }
+		{ "Rule 2", "Value 2" },
+		{ "Rule 3..?", "No, it's enough" }
 	};
 
 	SetServerRules(Rules); // Set a rules
@@ -80,7 +80,7 @@ public OnGameModeInit()
 
 ### **Download**
 
-[Pawn.Query](https://github.com/oukibt/Pawn.Query/releases/tag/1.1)
+[Pawn.Query](https://github.com/oukibt/Pawn.Query/releases/tag/1.1.1)
 
 ---
 
